@@ -5,22 +5,22 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3001:3000'
+      - '3000:3000'
     environment:
-      DATABASE_URL: 'postgresql://admin:admin@db:5432/price_tracker_db'
-      MORALIS_API_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImE2NmQ0MDU1LTA3NjEtNDc0My04Njg5LTZmZGQzODZiNjY4OCIsIm9yZ0lkIjoiNDE1MTcyIiwidXNlcklkIjoiNDI2NjcxIiwidHlwZUlkIjoiNzljY2FiN2ItN2M5NC00OWQzLTg4NzUtZDhmZjk0NDJlY2Q3IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MzA5MTEzNzEsImV4cCI6NDg4NjY3MTM3MX0.Z41q6URdXPfUXwHrYjRTqRYo7YLb_vRwbuV-kwlNxpo'
-      SMTP_SERVER: 'smtp.gmail.com'
-      EMAIL: 'virendrakapoor.windows45@gmail.com'
-      PASSWORD: 'vltd hggy cwjl tiah'
+      DATABASE_URL: ${DATABASE_URL}
+      MORALIS_API_KEY: ${MORALIS_API_KEY}
+      SMTP_SERVER: ${SMTP_SERVER}
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
     depends_on:
       - db
 
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: price_tracker_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - '5432:5432'
     volumes:

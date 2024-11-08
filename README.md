@@ -1,99 +1,127 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Price Tracker API
 
-## Description
+This project is a **NestJS-based API** for tracking cryptocurrency prices and sending email alerts if a chain's price increases by more than 3% within an hour. The API includes features for setting price alerts and monitoring price changes over time.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Features
 
-## Project setup
+- **Create Price Alerts:** Set up alerts for specific cryptocurrencies, specifying a target price and an email to notify when the target price is reached.
+- **Email Notifications:** Automatically send an email notification when a price alert is triggered.
+- **Scheduled Price Monitoring:** Monitor cryptocurrency prices at regular intervals and send alerts when certain thresholds are met.
+- **API Documentation:** View and test API endpoints via Swagger at `/api-docs`.
+
+## Prerequisites
+
+- **Docker** and **Docker Compose** installed on your system.
+
+## Setup and Installation
+
+### Clone the Repository
 
 ```bash
-$ yarn install
+git clone https://github.com/your-username/price-tracker.git
+cd price-tracker
 ```
 
-## Compile and run the project
+## Environment Variables
+
+Create an `.env` file in the root of the project with the following variables:
+
+```plaintext
+# Database connection
+DATABASE_URL=postgresql://admin:admin@db:5432/price_tracker_db
+
+# API Key for Moralis
+MORALIS_API_KEY=your_moralis_api_key
+
+# SMTP email configuration
+SMTP_SERVER=smtp.gmail.com
+EMAIL=your_email@gmail.com
+PASSWORD=your_app_specific_password
+
+# PostgreSQL settings
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin
+POSTGRES_DB=price_tracker_db
+
+# Crypto addresses
+WETH=0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+WMATIC=0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+
+# Alert email recipient
+ALERT_EMAIL=alert_recipient_email@example.com
+```
+
+## Example `.env` Template
+
+You may use this example to get started with your `.env` file setup:
+
+```plaintext
+DATABASE_URL=
+MORALIS_API_KEY=
+SMTP_SERVER=
+EMAIL=
+PASSWORD=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+WETH=0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+WMATIC=0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+ALERT_EMAIL=alert_recipient_email@example.com
+```
+
+## Application Structure
+
+- **`PriceService`**: Manages fetching token prices from Moralis and saving them to the database.
+- **`SchedulerService`**: Runs scheduled tasks to check prices periodically. If there's a significant price increase (3% within an hour), it triggers an email alert.
+- **`AlertsService`**: Manages user alerts for specific target prices, notifying users via email when their alert is triggered.
+
+### API Endpoints
+
+The following are the primary functions of the project:
+
+- **Fetch Latest Price**: Automatically fetches the latest price every 5 minutes.
+- **Save Price to Database**: Saves hourly prices for WETH and WMATIC to PostgreSQL.
+- **Send Alert**: Sends an alert email if the price threshold is met or if a target price alert is triggered.
+
+### Sending Email Alerts
+
+Alerts are sent via email based on the following conditions:
+
+- If the price of a token (ETH or MATIC) increases by 3% within an hour.
+- If a user has set an alert for a target price, and the token reaches or exceeds that target.
+
+Ensure that the email credentials in your `.env` file are valid and that [app-specific passwords](https://support.google.com/accounts/answer/185833?hl=en) are used if you are using Gmail.
+
+### Build and Run the Docker Containers
+
+Run the following command to build and start the application and its database in Docker:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+docker-compose up --build
 ```
 
-## Run tests
+This command will start the API service and a PostgreSQL database instance, and the NestJS application will be available at `http://localhost:3000`.
 
-```bash
-# unit tests
-$ yarn run test
+  > **Note:** The `docker-compose.yml` file should include the database and app service configurations, with both services using the same network for easy communication.
 
-# e2e tests
-$ yarn run test:e2e
+### Access the API Documentation
 
-# test coverage
-$ yarn run test:cov
-```
+Once the Docker containers are up, you can access the **Swagger API Documentation** at:
 
-## Deployment
+[http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Troubleshooting
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- Ensure Docker and Docker Compose are installed correctly.
+- If you encounter database connection issues, verify that the database configuration in `.env` matches your `docker-compose.yml` settings.
+- Check the logs of the Docker containers for detailed error messages:
 
-```bash
-$ yarn install -g mau
-$ mau deploy
-```
+  ```bash
+  docker-compose logs
+  ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

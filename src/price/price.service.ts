@@ -31,6 +31,18 @@ export class PriceService implements OnModuleInit {
   getPort(): number {
     return this.configService.get<number>('PORT', 3000); // default to 3000 if not set
   }
+  getWmatic(): string {
+    return this.configService.get<string>(
+      'WMATIC',
+      '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+    ); // default to 3000 if not set
+  }
+  getWeth(): string {
+    return this.configService.get<string>(
+      'WETH',
+      '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    ); // default to 3000 if not set
+  }
 
   getmoralisApiKey(): string {
     return this.configService.get<string>('MORALIS_API_KEY');
@@ -42,10 +54,10 @@ export class PriceService implements OnModuleInit {
     let address: string;
     if (chain === 'ethereum') {
       chainHex = '0x1';
-      address = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+      address = this.getWeth();
     } else if (chain === 'polygon') {
       chainHex = '0x89';
-      address = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270';
+      address = this.getWmatic();
     } else {
       throw new Error('Unsupported chain');
     }
